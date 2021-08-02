@@ -1,0 +1,17 @@
+{
+    "name": "webjump252/php_unit",
+    "autoload": {
+        "psr-4": {
+            "Webjump252\\PhpUnit\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nathália",
+            "email": "nathalia.borges@webjump.com.br"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
