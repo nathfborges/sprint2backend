@@ -2,69 +2,64 @@
 
 namespace Webjump252\PhpUnit\Test;
 
+use DomainException;
+use PhpParser\Builder\Class_;
 use PHPUnit\Framework\TestCase;
+use Webjump252\PhpUnit\Model\{Cadastro, Colaborador};
 
 Class CadastroTest extends TestCase 
 {
-    //Arange - Given
-    $cadastro1 = new Cadastro();
-    $cadastro1-> setNomeCompleto('Nathália Ferreira Borges');
-    $cadastro1-> setMatricula('456456');
-    $cadastro1-> setCargo('Desenvolvedor Junior');
-    $cadastro1-> setSalarioBase(4800);
-    
-    $cadastro2 = new Cadastro();
-    $cadastro2-> setNomeCompleto('Linco Lindo');
-    $cadastro2-> setMatricula('458946');
-    $cadastro2-> setCargo('Desenvolvedor Pleno');
-    $cadastro2-> setSalarioBase(9000);
-
-    $cadastro3 = new Cadastro();
-    $cadastro3-> setNomeCompleto('Gut Lindo');
-    $cadastro3-> setMatricula('458977');
-    $cadastro3-> setCargo('Desenvolvedor Senior');
-    $cadastro3-> setSalarioBase(20000);
+    /**
+     * @dataProvider provedorDados
+     */
+    public function testCount(array $dados)
+    {
 
     //Act - When
     
-    $colaboradoresFilial1 = new Colaborador($cadastro1);
-    $colaboradoresFilial1 = new Colaborador($cadastro2);
-    $colaboradoresFilial1 = new Colaborador($cadastro3);
-    $arrayColaboradores = $colaboradoresFilial1->getColaboradores();
+    $colaboradoresFilial1 = new Colaborador();
+    $colaboradoresFilial1->adicionaColaborador($dados[0]);
+    $colaboradoresFilial1->adicionaColaborador($dados[1]);
+    $colaboradoresFilial1->adicionaColaborador($dados[2]);
+    $arrayColaboradores = $colaboradoresFilial1->getTodosColaboradores();
 
     // Assert - When
     self::assertCount(3, $arrayColaboradores);
+    }
 
-}
+    public function testSalario()
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Cargo inválido');
+        //Arange - Given
+        $cadastro1 = new Cadastro('Nathália', '456456', 'Desenvolvedor Junior');
 
-Class CalculadoraTest extends TestCase
-{
-    //Arange - Given
-    $cadastro1 = new Cadastro();
-    $cadastro1-> setNomeCompleto('Nathália Ferreira Borges');
-    $cadastro1-> setMatricula('456456');
-    $cadastro1-> setCargo('Desenvolvedor Junior');
-    $cadastro1-> setSalarioBase(4800);
-    
-    $cadastro2 = new Cadastro();
-    $cadastro2-> setNomeCompleto('Linco Lindo');
-    $cadastro2-> setMatricula('458946');
-    $cadastro2-> setCargo('Gerente');
-    $cadastro2-> setSalarioBase(9000);
+        $cadastro2 = new Cadastro('Linco Lindo','458946','Desenvolvedor Junior');
 
-    $cadastro3 = new Cadastro();
-    $cadastro3-> setNomeCompleto('Gut Lindo');
-    $cadastro3-> setMatricula('458977');
-    $cadastro3-> setCargo('Squad leader');
-    $cadastro3-> setSalarioBase(20000);
+        //Act - When
 
+        $colaboradoresFilial1 = new Colaborador();
+        $colaboradoresFilial1->adicionaColaborador($cadastro1);
+        $colaboradoresFilial1->adicionaColaborador($cadastro2);
+        $arrayColaboradores = $colaboradoresFilial1->getTodosColaboradores();
 
-    //Act - When
-    $colaboradoresFilial1 = new Colaborador($cadastro1);
-    $colaboradoresFilial1 = new Colaborador($cadastro2);
-    $colaboradoresFilial1 = new Colaborador($cadastro3);
+    }
 
-    $cadastro1SalarioLiquido = $cadastro1->getSalarioLiquido();
+    public function provedorDados() : array
+    {
+        $cadastro1 = new Cadastro('Nathália', '456456', 'Desenvolvedor Junior');
 
+        $cadastro2 = new Cadastro('Linco Lindo','458946','Desenvolvedor Pleno');
 
+        $cadastro3 = new Cadastro('Manoel','789646','Desenvolvedor Pleno');
+
+        return [
+             ['dados'=> [ 
+                $cadastro1,
+                $cadastro2,
+                $cadastro3
+             ]
+                ]
+             ];
+    }
 }
